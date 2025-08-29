@@ -1,71 +1,104 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gray-50">
-    <div class="max-w-md w-full space-y-8">
-      <div>
-        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Create your account
-        </h2>
+  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-50 px-4">
+    <div class="max-w-md w-full">
+      <!-- Header -->
+      <div class="text-center mb-8">
+        <div class="mx-auto w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mb-4">
+          <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+          </svg>
+        </div>
+        <h2 class="text-3xl font-bold text-gray-900 mb-2">Create account</h2>
+        <p class="text-gray-600">Join us to start managing your projects</p>
       </div>
-      <form class="mt-8 space-y-6" @submit.prevent="handleRegister">
-        <div class="rounded-md shadow-sm -space-y-px">
+
+      <!-- Form Card -->
+      <div class="card p-8">
+        <form @submit.prevent="handleRegister" class="space-y-6">
           <div>
+            <label for="name" class="form-label">Full name</label>
             <input
+              id="name"
               v-model="form.name"
               type="text"
               required
-              class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-              placeholder="Full name"
+              class="form-input"
+              placeholder="Enter your full name"
+              :class="{ 'border-red-300 focus:ring-red-500': error }"
             />
           </div>
+
           <div>
+            <label for="email" class="form-label">Email address</label>
             <input
+              id="email"
               v-model="form.email"
               type="email"
               required
-              class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-              placeholder="Email address"
+              class="form-input"
+              placeholder="Enter your email"
+              :class="{ 'border-red-300 focus:ring-red-500': error }"
             />
           </div>
+
           <div>
+            <label for="password" class="form-label">Password</label>
             <input
+              id="password"
               v-model="form.password"
               type="password"
               required
-              class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-              placeholder="Password"
+              class="form-input"
+              placeholder="Create a password"
+              :class="{ 'border-red-300 focus:ring-red-500': error }"
             />
           </div>
+
           <div>
+            <label for="password_confirmation" class="form-label">Confirm password</label>
             <input
+              id="password_confirmation"
               v-model="form.password_confirmation"
               type="password"
               required
-              class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-              placeholder="Confirm password"
+              class="form-input"
+              placeholder="Confirm your password"
+              :class="{ 'border-red-300 focus:ring-red-500': error }"
             />
           </div>
-        </div>
 
-        <div v-if="error" class="text-red-600 text-sm">
-          {{ error }}
-        </div>
+          <!-- Error Message -->
+          <Transition name="fade">
+            <div v-if="error" class="bg-red-50 border border-red-200 rounded-lg p-4">
+              <div class="flex items-center">
+                <svg class="w-5 h-5 text-red-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span class="text-red-700 text-sm">{{ error }}</span>
+              </div>
+            </div>
+          </Transition>
 
-        <div>
           <button
             type="submit"
             :disabled="loading"
-            class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+            class="btn btn-primary w-full py-3 text-base font-semibold"
           >
-            {{ loading ? 'Creating account...' : 'Sign up' }}
+            <div v-if="loading" class="loading-spinner mr-2"></div>
+            {{ loading ? 'Creating account...' : 'Create account' }}
           </button>
-        </div>
+        </form>
 
-        <div class="text-center">
-          <router-link to="/login" class="text-indigo-600 hover:text-indigo-500">
-            Already have an account? Sign in
-          </router-link>
+        <!-- Divider -->
+        <div class="mt-8 pt-6 border-t border-gray-200">
+          <p class="text-center text-gray-600">
+            Already have an account?
+            <router-link to="/login" class="font-semibold text-blue-600 hover:text-blue-700 transition-colors">
+              Sign in
+            </router-link>
+          </p>
         </div>
-      </form>
+      </div>
     </div>
   </div>
 </template>

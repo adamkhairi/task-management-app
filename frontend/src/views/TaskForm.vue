@@ -1,14 +1,18 @@
 <template>
   <div class="min-h-screen bg-gray-50">
     <!-- Navigation -->
-    <nav class="bg-white shadow">
+    <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
           <div class="flex items-center space-x-4">
-            <button @click="goBack" class="text-indigo-600 hover:text-indigo-500">
-              ← Back
+            <button @click="goBack" class="btn btn-secondary text-sm inline-flex items-center">
+              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+              </svg>
+              Back
             </button>
-            <h1 class="text-xl font-semibold">
+            <div class="h-6 w-px bg-gray-300"></div>
+            <h1 class="text-xl font-bold text-gray-900">
               {{ isEditing ? 'Edit Task' : 'Create Task' }}
             </h1>
           </div>
@@ -17,103 +21,133 @@
     </nav>
 
     <!-- Main Content -->
-    <div class="max-w-2xl mx-auto py-6 sm:px-6 lg:px-8">
-      <div class="px-4 py-6 sm:px-0">
-        <div class="bg-white rounded-lg shadow p-6">
-          <form @submit.prevent="handleSubmit">
-            <div class="mb-4">
-              <label for="title" class="block text-sm font-medium text-gray-700 mb-2">
-                Task Title
-              </label>
-              <input
-                id="title"
-                v-model="form.title"
-                type="text"
-                required
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                placeholder="Enter task title"
-              />
-            </div>
-
-            <div class="mb-4">
-              <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
-                Description
-              </label>
-              <textarea
-                id="description"
-                v-model="form.description"
-                rows="4"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                placeholder="Enter task description"
-              ></textarea>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-              <div>
-                <label for="status" class="block text-sm font-medium text-gray-700 mb-2">
-                  Status
-                </label>
-                <select
-                  id="status"
-                  v-model="form.status"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                >
-                  <option value="todo">To Do</option>
-                  <option value="in_progress">In Progress</option>
-                  <option value="done">Done</option>
-                </select>
-              </div>
-
-              <div>
-                <label for="priority" class="block text-sm font-medium text-gray-700 mb-2">
-                  Priority
-                </label>
-                <select
-                  id="priority"
-                  v-model="form.priority"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                >
-                  <option value="low">Low</option>
-                  <option value="medium">Medium</option>
-                  <option value="high">High</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="mb-6">
-              <label for="due_date" class="block text-sm font-medium text-gray-700 mb-2">
-                Due Date
-              </label>
-              <input
-                id="due_date"
-                v-model="form.due_date"
-                type="date"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-              />
-            </div>
-
-            <div v-if="error" class="mb-4 text-red-600 text-sm">
-              {{ error }}
-            </div>
-
-            <div class="flex justify-end space-x-3">
-              <button
-                type="button"
-                @click="goBack"
-                class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                :disabled="loading"
-                class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-md text-sm font-medium disabled:opacity-50"
-              >
-                {{ loading ? 'Saving...' : (isEditing ? 'Update Task' : 'Create Task') }}
-              </button>
-            </div>
-          </form>
+    <div class="max-w-2xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+      <div class="card p-8">
+        <!-- Header -->
+        <div class="mb-8">
+          <h2 class="text-2xl font-bold text-gray-900 mb-2">
+            {{ isEditing ? 'Edit Task Details' : 'Create New Task' }}
+          </h2>
+          <p class="text-gray-600">
+            {{ isEditing ? 'Update your task information below.' : 'Fill in the details to create your new task.' }}
+          </p>
         </div>
+
+        <form @submit.prevent="handleSubmit" class="space-y-6">
+          <div>
+            <label for="title" class="form-label">
+              Task Title *
+            </label>
+            <input
+              id="title"
+              v-model="form.title"
+              type="text"
+              required
+              class="form-input"
+              placeholder="Enter a clear, descriptive task title"
+              :class="{ 'border-red-300 focus:ring-red-500': error }"
+            />
+          </div>
+
+          <div>
+            <label for="description" class="form-label">
+              Description
+            </label>
+            <textarea
+              id="description"
+              v-model="form.description"
+              rows="4"
+              class="form-input resize-none"
+              placeholder="Describe what needs to be done, any requirements, or additional context..."
+              :class="{ 'border-red-300 focus:ring-red-500': error }"
+            ></textarea>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label for="status" class="form-label">
+                Status
+              </label>
+              <select
+                id="status"
+                v-model="form.status"
+                class="form-input"
+                :class="{ 'border-red-300 focus:ring-red-500': error }"
+              >
+                <option value="todo">To Do - Not started yet</option>
+                <option value="in_progress">In Progress - Currently working</option>
+                <option value="done">Done - Completed</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="priority" class="form-label">
+                Priority
+              </label>
+              <select
+                id="priority"
+                v-model="form.priority"
+                class="form-input"
+                :class="{ 'border-red-300 focus:ring-red-500': error }"
+              >
+                <option value="low">Low - Can wait</option>
+                <option value="medium">Medium - Normal priority</option>
+                <option value="high">High - Urgent</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label for="due_date" class="form-label">
+              Due Date
+            </label>
+            <input
+              id="due_date"
+              v-model="form.due_date"
+              type="date"
+              class="form-input"
+              :class="{ 'border-red-300 focus:ring-red-500': error }"
+            />
+            <p class="text-sm text-gray-500 mt-1">Optional: Set a deadline for this task</p>
+          </div>
+
+          <!-- Error Message -->
+          <Transition name="fade">
+            <div v-if="error" class="bg-red-50 border border-red-200 rounded-lg p-4">
+              <div class="flex items-center">
+                <svg class="w-5 h-5 text-red-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span class="text-red-700 text-sm">{{ error }}</span>
+              </div>
+            </div>
+          </Transition>
+
+          <!-- Actions -->
+          <div class="flex flex-col sm:flex-row justify-end gap-3 pt-6 border-t border-gray-200">
+            <button
+              type="button"
+              @click="goBack"
+              class="btn btn-secondary inline-flex items-center justify-center"
+            >
+              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+              Cancel
+            </button>
+            <button
+              type="submit"
+              :disabled="loading"
+              class="btn btn-primary inline-flex items-center justify-center"
+            >
+              <div v-if="loading" class="loading-spinner mr-2"></div>
+              <svg v-else class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+              </svg>
+              {{ loading ? 'Saving...' : (isEditing ? 'Update Task' : 'Create Task') }}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
