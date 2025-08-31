@@ -152,7 +152,3 @@ task-management-app/
 └── tests/
     └── Feature/
 ```
-
-## 👤 Auteur
-
-Développé avec ❤️ en utilisant Laravel et Vue.js
